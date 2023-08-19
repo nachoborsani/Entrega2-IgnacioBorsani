@@ -1,53 +1,52 @@
-// Capturando la entrada del usuario
-function getInput(mensaje) {
-  return prompt(mensaje);
-}
-
-// Objeto para almacenar productos
-const productos = [];
-
-// Función para agregar un nuevo producto
-function agregarProducto(nombre, precio) {
-  productos.push({ nombre, precio });
-}
-
-// Función para mostrar todos los productos
-function mostrarProductos() {
-  console.log("Lista de productos:");
-  productos.forEach((producto, index) => {
-    console.log(`${index + 1}. ${producto.nombre} - Precio: $${producto.precio}`);
-  });
-}
-
-// Función para buscar productos por nombre
-function buscarProducto(nombre) {
-  const resultados = productos.filter(producto => producto.nombre.toLowerCase().includes(nombre.toLowerCase()));
-  return resultados;
-}
-
-// Función principal del simulador
-function simulador() {
-  const nombreProducto = getInput("Ingrese el nombre del producto:");
-  const precioProducto = parseFloat(getInput("Ingrese el precio del producto:"));
-
-  agregarProducto(nombreProducto, precioProducto);
-
-  console.log(`Producto "${nombreProducto}" agregado con éxito.`);
-
-  const buscarNombre = getInput("Ingrese un término para buscar productos por nombre:");
-  const resultadosBusqueda = buscarProducto(buscarNombre);
-
-  if (resultadosBusqueda.length > 0) {
-    console.log("Resultados de búsqueda:");
-    resultadosBusqueda.forEach((producto, index) => {
-      console.log(`${index + 1}. ${producto.nombre} - Precio: $${producto.precio}`);
-    });
-  } else {
-    console.log("No se encontraron productos que coincidan con la búsqueda.");
+// Definición de la clase Jugador
+class Jugador {
+  constructor(nombre, puntosDeVida, puntosDeAtaque) {
+    this.nombre = nombre;
+    this.nivel = 1;
+    this.puntosDeVida = puntosDeVida;
+    this.puntosDeAtaque = puntosDeAtaque;
   }
 
-  mostrarProductos();
+  atacar(enemigo) {
+    console.log(`${this.nombre} ataca a ${enemigo.nombre}!`);
+    enemigo.puntosDeVida -= this.puntosDeAtaque;
+    console.log(`${enemigo.nombre} ahora tiene ${enemigo.puntosDeVida} puntos de vida.`);
+  }
+
+  mostrarEstado() {
+    console.log(`Estado de ${this.nombre}:`);
+    console.log(`Nivel: ${this.nivel}`);
+    console.log(`Puntos de Vida: ${this.puntosDeVida}`);
+    console.log(`Puntos de Ataque: ${this.puntosDeAtaque}`);
+  }
 }
 
-// Llamada a la función principal
-simulador();
+// Crear instancia de Jugador
+const nombreJugador = prompt("Ingresa el nombre del jugador:");
+const jugador = new Jugador(nombreJugador, 100, 10);
+
+// Crear un array de enemigos
+const enemigos = [
+  new Jugador("Orco", 50, 5),
+  new Jugador("Dragón", 200, 20),
+  new Jugador("Goblin", 30, 3),
+];
+
+// Simulación de combate con cada enemigo
+enemigos.forEach((enemigo) => {
+  jugador.mostrarEstado();
+  console.log("¡Un enemigo aparece!", enemigo.nombre);
+  enemigo.mostrarEstado();
+  jugador.atacar(enemigo);
+  if (enemigo.puntosDeVida <= 0) {
+    console.log(`${enemigo.nombre} ha sido derrotado.`);
+  } else {
+    enemigo.atacar(jugador);
+    if (jugador.puntosDeVida <= 0) {
+      console.log(`${jugador.nombre} ha sido derrotado.`);
+    }
+  }
+});
+
+// Mostrar estado final del jugador
+jugador.mostrarEstado();
